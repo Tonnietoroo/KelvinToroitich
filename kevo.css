@@ -545,99 +545,9 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
 .nav-toggle.open .bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .nav-toggle.open .bar:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
-.nav-menu.mobile-open {
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  inset: var(--nav-h) 0 0;
-  background: var(--bg-base);
-  padding: 0;
-  gap: 0;
-  align-items: stretch;
-  overflow-y: auto;
-  border-top: 2px solid var(--clr-primary);
-  z-index: 998;
-  animation: slideDown 0.25s var(--ease);
-}
-
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.nav-menu.mobile-open li {
-  border-bottom: 1px solid var(--border-subtle);
-  list-style: none;
-}
-
-.nav-menu.mobile-open .nav-link {
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  font-weight: 700;
-  padding: var(--sp-5) var(--sp-6);
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-radius: 0;
-  color: var(--text-200);
-  letter-spacing: -0.01em;
-  transition: all var(--t-fast);
-  border-left: 3px solid transparent;
-}
-
-/* Override desktop underline pseudo with right-arrow */
-.nav-menu.mobile-open .nav-link::after {
-  content: '\2192';
-  position: static;
-  transform: none;
-  width: auto;
-  height: auto;
-  background: transparent;
-  color: var(--clr-primary);
-  font-size: 1.1rem;
-  opacity: 0;
-  transition: opacity var(--t-base) var(--ease), transform var(--t-base) var(--ease);
-  display: block;
-  border-radius: 0;
-}
-
-.nav-menu.mobile-open .nav-link:hover::after {
-  opacity: 1;
-  transform: translateX(4px);
-}
-
-.nav-menu.mobile-open .nav-link.active {
-  color: var(--clr-primary-light);
-  background: var(--clr-primary-glow);
-  border-left-color: var(--clr-primary);
-}
-
-.nav-menu.mobile-open .nav-link.active::after {
-  opacity: 1;
-}
-
-.nav-menu.mobile-open .nav-link:hover:not(.active) {
-  color: var(--text-100);
-  background: var(--bg-surface);
-  border-left-color: var(--border-default);
-}
-
-/* Mobile nav footer — hidden on desktop */
+/* Mobile nav footer — hidden on desktop, shown inside mobile-open menu */
 .nav-menu-footer {
   display: none;
-}
-
-.nav-menu.mobile-open .nav-menu-footer {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: var(--sp-3);
-  padding: var(--sp-6);
-  margin-top: auto;
-  background: var(--bg-surface);
-  border-top: 1px solid var(--border-default);
-  border-bottom: none;
 }
 
 .nav-menu-wa-btn {
@@ -657,7 +567,7 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
 }
 
 .nav-menu-wa-btn:hover { background: #1ebe59; }
-.nav-menu-wa-btn i { font-size: 1.2rem; }
+.nav-menu-wa-btn i    { font-size: 1.2rem; }
 
 .nav-menu-contact {
   display: flex;
@@ -2201,21 +2111,112 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
 /* ============================================================
    22. RESPONSIVE — MOBILE (≤768px)
    ============================================================ */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 768px) {
+  /* Hide desktop nav, reveal hamburger */
   .nav-menu    { display: none; }
   .btn-nav-cta { display: none; }
   .nav-toggle  { display: flex; }
 
-  .section     { padding-block: var(--sp-16); }
+  /* ─── Mobile menu overlay — defined INSIDE media query so
+         display:flex always beats display:none above ─── */
+  .nav-menu.mobile-open {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 68px;
+    top: var(--nav-h, 68px);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    min-height: calc(100vh - 68px);
+    background: var(--bg-base);
+    padding: 0;
+    gap: 0;
+    align-items: stretch;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-top: 2px solid var(--clr-primary);
+    z-index: 9999;
+    animation: slideDown 0.22s ease-out;
+  }
 
-  .hero-container  { padding-block: var(--sp-12); }
+  .nav-menu.mobile-open li {
+    border-bottom: 1px solid var(--border-subtle);
+    list-style: none;
+  }
 
-  /* Force all 3 stats into one row on mobile */
+  .nav-menu.mobile-open .nav-link {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding: 1.25rem 1.5rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 0;
+    color: var(--text-200);
+    letter-spacing: -0.01em;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    border-left: 3px solid transparent;
+  }
+
+  /* Override desktop underline — show right arrow instead */
+  .nav-menu.mobile-open .nav-link::after {
+    content: '\2192';
+    position: static;
+    transform: none;
+    width: auto;
+    height: auto;
+    background: transparent;
+    color: var(--clr-primary);
+    font-size: 1.1rem;
+    opacity: 0;
+    display: block;
+    border-radius: 0;
+    transition: opacity 0.15s;
+  }
+
+  .nav-menu.mobile-open .nav-link.active::after { opacity: 1; }
+
+  .nav-menu.mobile-open .nav-link.active {
+    color: var(--clr-primary-light);
+    background: var(--clr-primary-glow);
+    border-left-color: var(--clr-primary);
+  }
+
+  .nav-menu.mobile-open .nav-link:active:not(.active) {
+    background: var(--bg-surface);
+  }
+
+  /* WhatsApp + email footer inside open menu */
+  .nav-menu.mobile-open .nav-menu-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    margin-top: auto;
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border-default);
+  }
+
+  /* ─── General layout ─── */
+  .section { padding-block: 4rem; }
+
+  .hero-container { padding-block: 3rem; }
+
+  /* Keep all 3 stats in one row */
   .hero-stats {
     flex-wrap: nowrap;
     width: 100%;
     justify-content: space-evenly;
-    padding: var(--sp-4) var(--sp-3);
+    padding: 1rem 0.75rem;
     gap: 0;
   }
   .stat-divider    { display: block; height: 28px; }
@@ -2231,9 +2232,9 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
   .achieve-grid    { grid-template-columns: 1fr; }
   .services-grid   { grid-template-columns: 1fr; }
 
-  .timeline        { padding-left: var(--sp-8); }
-  .timeline-marker { left: calc(-1 * var(--sp-8) + 4px); }
-  .timeline-role   { font-size: var(--text-base); }
+  .timeline        { padding-left: 2rem; }
+  .timeline-marker { left: calc(-2rem + 4px); }
+  .timeline-role   { font-size: 1rem; }
 
   .edu-card        { flex-direction: column; }
   .cert-card       { flex-direction: column; }
@@ -2241,14 +2242,14 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
   .about-actions   { flex-direction: column; }
 
   .form-row        { grid-template-columns: 1fr; }
-  .contact-form-wrap { padding: var(--sp-6); }
+  .contact-form-wrap { padding: 1.5rem; }
 
   .footer-inner    { flex-direction: column; text-align: center; }
   .footer-nav      { justify-content: center; }
 
-  .testimonial-card { padding: var(--sp-8) var(--sp-6); }
+  .testimonial-card { padding: 2rem 1.5rem; }
 
-  .scroll-top { bottom: var(--sp-5); right: var(--sp-5); }
+  .scroll-top { bottom: 1.25rem; right: 1.25rem; }
 }
 
 
